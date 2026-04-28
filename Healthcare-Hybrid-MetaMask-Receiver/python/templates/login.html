@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Robot Authentication</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Robot Authentication</h2>
+    <button onclick="connectWallet()">Connect MetaMask</button>
+    <p id="status"></p>
+</div>
+
+<script>
+async function connectWallet() {
+    const statusEl = document.getElementById("status");
+
+    // Check if MetaMask is installed
+    if (!window.ethereum) {
+        statusEl.innerText = "MetaMask not detected! Please install MetaMask.";
+        return;
+    }
+
+    statusEl.innerText = "Connecting to MetaMask...";
+    try {
+        // Request account access
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        const wallet = accounts[0];
+
+        statusEl.innerText = "Signing authentication challenge...";
+
+        // Get challenge message from backend
+        const challengeRes = await fetch("/challenge");
+        const challengeData = await challengeRes.json();
+        const message = challengeData.message;
+
+        // Sign the challenge
+        const signature = await ethereum.request({
+            method: "personal_sign",
+            params: [message, wallet]
+        });
+
+        // Verify the signature with the backend
+        const verifyRes = await fetch("/verify_robot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ wallet, message, signature })
+        });
+
+        const resData = await verifyRes.json();
+
+        if (resData.status === "success") {
+            statusEl.innerText = "✅ Robot verified! Redirecting to credentials...";
+            // Small delay to show success
+            setTimeout(() => { window.location = "/credentials"; }, 800);
+        } else {
+            statusEl.innerText = "❌ Verification failed! Try again.";
+        }
+
+    } catch (err) {
+        console.error("MetaMask error:", err);
+        statusEl.innerText = "MetaMask connection failed. Check console for details.";
+    }
+}
+</script>
+</body>
+</html>

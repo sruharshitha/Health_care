@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+**/node_modules/
+
+# hardhat
+artifacts/
+cache/
+typechain/
+typechain-types/
+
+# env
+.env
+
+# logs
+*.log
+
+# ipfs
+.ipfs/
+
+# python
+__pycache__/
+*.pyc
+venv/
+
+# OS
+.DS_Store
+Thumbs.db

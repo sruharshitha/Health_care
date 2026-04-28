@@ -1,0 +1,4 @@
+web3
+ipfshttpclient
+flask
+flask-cors
