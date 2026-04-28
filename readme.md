@@ -133,8 +133,8 @@ ________________________________________
 •	Improved AI models for adaptive threat detection
 ________________________________________
 👤 Author
-•	Your Name
-•	Email: your-email@example.com
+•	sruharshitha
+•	Email: sruharshitha@gmail.com
 ________________________________________
 ⭐ Acknowledgements
 This project was developed as part of academic research to explore secure and intelligent communication systems using emerging technologies.
